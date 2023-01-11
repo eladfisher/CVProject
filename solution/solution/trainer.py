@@ -61,8 +61,29 @@ class Trainer:
 
         for batch_idx, (inputs, targets) in enumerate(train_dataloader):
             """INSERT YOUR CODE HERE."""
+            self.optimizer.zero_grad()
+            output = self.model(inputs)
+            loss = self.criterion(output,targets)
+            loss.backward()
+            self.optimizer.step()
+            total_loss += loss.item()
+
+            correct_labeled_samples += (output.argmax(1) == targets).type(torch.float).sum().item()
+            nof_samples += self.batch_size
+            '''
+            pred = self.model
+            loss = self.criterion(pred, y)
+
+            # Backpropagation
+            self.optimizer.zero_grad()
+            loss.backward()
+            self.optimizer.step()
+            '''
+            
             if batch_idx % print_every == 0 or \
                     batch_idx == len(train_dataloader) - 1:
+                avg_loss = total_loss / batch_idx
+                accuracy = correct_labeled_samples/nof_samples
                 print(f'Epoch [{self.epoch:03d}] | Loss: {avg_loss:.3f} | '
                       f'Acc: {accuracy:.2f}[%] '
                       f'({correct_labeled_samples}/{nof_samples})')
@@ -93,7 +114,20 @@ class Trainer:
 
         for batch_idx, (inputs, targets) in enumerate(dataloader):
             """INSERT YOUR CODE HERE."""
+            with torch.no_grad():
+                pred = self.model(inputs)
+                total_loss += self.criterion(pred, targets).item()
+                correct_labeled_samples += (pred.argmax(1) == targets).type(torch.float).sum().item()
+                
+
+
+            nof_samples += self.batch_size
+            
             if batch_idx % print_every == 0 or batch_idx == len(dataloader) - 1:
+
+                avg_loss = total_loss / batch_idx
+                accuracy = correct_labeled_samples/nof_samples
+
                 print(f'Epoch [{self.epoch:03d}] | Loss: {avg_loss:.3f} | '
                       f'Acc: {accuracy:.2f}[%] '
                       f'({correct_labeled_samples}/{nof_samples})')
