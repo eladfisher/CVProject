@@ -27,9 +27,31 @@ class FacesDataset(Dataset):
         """Get a sample and label from the dataset."""
         """INSERT YOUR CODE HERE, overrun return."""
 
-        return torch.rand((3, 256, 256)), int(torch.randint(0, 2, size=(1, )))
+        if index >= len(self) or index < 0:
+            raise Exception("index out of bounce")
+
+        label = 0
+        image = ''
+
+        fake_path = os.path.join(self.root_path, 'fake')
+        real_path = os.path.join(self.root_path, 'real')
+
+        if index >= len(self.real_image_names): # image index refers to fake image
+            image = os.path.join(fake_path,self.fake_image_names[index - len(self.real_image_names)])
+            label = 1
+        else: # image index refers to real image
+            image = os.path.join(real_path,self.real_image_names[index])
+            
+        pil_image = Image.open(image)
+        tensor = torch.Transforms.PILToTensor()(pil_image)
+        if self.transform is not None:
+            tensor = self.transform(tensor)
+        return tensor,label
+        #return torch.rand((3, 256, 256)), int(torch.randint(0, 2, size=(1, )))
 
     def __len__(self):
         """Return the number of images in the dataset."""
         """INSERT YOUR CODE HERE, overrun return."""
-        return 100
+
+
+        return len(self.real_image_names) + len(self.fake_image_names)
