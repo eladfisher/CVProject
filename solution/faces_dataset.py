@@ -1,7 +1,7 @@
 """Custom faces dataset."""
 import os
 
-import torch
+import torch,torchvision
 from PIL import Image
 from torch.utils.data import Dataset
 
@@ -43,9 +43,11 @@ class FacesDataset(Dataset):
             image = os.path.join(real_path,self.real_image_names[index])
             
         pil_image = Image.open(image)
-        tensor = torch.Transforms.PILToTensor()(pil_image)
+        tensor = None
         if self.transform is not None:
-            tensor = self.transform(tensor)
+            tensor = self.transform(pil_image)
+        else:
+            tensor = torchvision.transforms.PILToTensor()(pil_image)
         return tensor,label
         #return torch.rand((3, 256, 256)), int(torch.randint(0, 2, size=(1, )))
 
