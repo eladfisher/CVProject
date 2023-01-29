@@ -58,7 +58,35 @@ def get_soft_scores_and_true_labels(dataset, model):
         gt_labels: an iterable holding the samples' ground truth labels.
     """
     """INSERT YOUR CODE HERE, overrun return."""
-    return torch.rand(100, ), torch.rand(100, ), torch.randint(0, 2, (100, ))
+
+    batch_size = 32
+    dataloader = DataLoader(dataset,
+                                batch_size=batch_size,
+                                shuffle=False)
+
+    soft_scores_A = []
+    soft_scores_B = []
+    true_lables = []
+    cuda_available = torch.cuda.is_available()
+        #print("cuda device was found. Training tensors will be moved to this device")
+
+    with torch.no_grad():
+        for inputs, targets in dataloader:
+            if cuda_available:
+                inputs = inputs.to("cuda")
+                targets = targets.to("cuda")
+
+            pred = model(inputs)
+
+            soft_scores_A += [result[0] for result in pred]
+            soft_scores_B += [result[1] for result in pred]
+            true_lables += list(targets)
+
+
+
+    return soft_scores_A,soft_scores_B,true_lables
+    return  torch.rand(100, ), torch.rand(100, ), torch.randint(0, 2, (100, ))
+    
 
 
 def plot_roc_curve(roc_curve_figure,
