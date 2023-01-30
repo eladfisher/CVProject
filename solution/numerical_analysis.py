@@ -78,9 +78,12 @@ def get_soft_scores_and_true_labels(dataset, model):
 
             pred = model(inputs)
 
-            soft_scores_A += [result[0] for result in pred]
-            soft_scores_B += [result[1] for result in pred]
-            true_lables += list(targets)
+            if cuda_available:
+                pred = pred.to("cpu")
+
+            soft_scores_A += [pred[i,0] for i in range(pred.size()[0])]
+            soft_scores_B += [pred[i,1] for i in range(pred.size()[0])]
+            true_lables += targets.tolist()
 
 
 
