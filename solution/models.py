@@ -69,7 +69,7 @@ def get_xception_based_model() -> nn.Module:
     """
     self.fc = nn.Linear(2048, num_classes)
     """
-    Xception_model = build_xception_backbone()
+    Xception_model = build_xception_backbone(pretrained=True)
     Xception_model.fc = XceptionCustomHead()
 
     return Xception_model
