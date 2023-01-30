@@ -33,6 +33,30 @@ class SimpleNet(nn.Module):
         two_way_output = self.fc3(fully_connected_second_out)
         return two_way_output
 
+class XceptionCustomHead(nn.Module):
+    """Simple Convolutional and Fully Connect network."""
+    def __init__(self):
+        super().__init__()
+        self.relu = nn.ReLU(inplace=True)
+        self.first_layer = nn.Linear(2048, 1000)
+        self.second_layer = nn.Linear(1000, 256)
+        self.third_layer = nn.Linear(256, 64)
+        self.fourth_layer = nn.Linear(64, 2)
+
+    def forward(self, vector):
+        """Compute a forward pass."""
+        x = self.first_layer(x)
+        x = self.relu(x)
+
+        x = self.second_layer(x)
+        x = self.relu(x)
+
+        x = self.third_layer(x)
+        x = self.relu(x)
+
+        x = self.fourth_layer(x)
+
+        return x
 
 def get_xception_based_model() -> nn.Module:
     """Return an Xception-Based network.
@@ -42,4 +66,10 @@ def get_xception_based_model() -> nn.Module:
     classification head stated in the exercise.
     """
     """INSERT YOUR CODE HERE, overrun return."""
-    return SimpleNet()
+    """
+    self.fc = nn.Linear(2048, num_classes)
+    """
+    Xception_model = build_xception_backbone()
+    Xception_model.fc = XceptionCustomHead()
+
+    return Xception_model
