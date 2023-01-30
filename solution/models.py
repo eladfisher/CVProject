@@ -45,7 +45,7 @@ class XceptionCustomHead(nn.Module):
 
     def forward(self, vector):
         """Compute a forward pass."""
-        x = self.first_layer(x)
+        x = self.first_layer(vector)
         x = self.relu(x)
 
         x = self.second_layer(x)
@@ -69,7 +69,7 @@ def get_xception_based_model() -> nn.Module:
     """
     self.fc = nn.Linear(2048, num_classes)
     """
-    Xception_model = build_xception_backbone()
+    Xception_model = build_xception_backbone(pretrained = True)
     Xception_model.fc = XceptionCustomHead()
 
     return Xception_model
