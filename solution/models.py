@@ -45,7 +45,7 @@ class XceptionCustomHead(nn.Module):
 
     def forward(self, vector):
         """Compute a forward pass."""
-        x = self.first_layer(x)
+        x = self.first_layer(vector)
         x = self.relu(x)
 
         x = self.second_layer(x)
