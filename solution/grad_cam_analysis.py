@@ -58,8 +58,9 @@ def get_grad_cam_visualization(test_dataset: torch.utils.data.Dataset,
 
     targets = [label]
     grayscale_cam = cam(input_tensor=input_tensor, targets=targets)
+    rgb_img = np.transpose(input_tensor[0, :, :].numpy(), (1, 2, 0))
 
-    visualization = show_cam_on_image(input_tensor, grayscale_cam, use_rgb=True)
+    visualization = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
     
     
     
