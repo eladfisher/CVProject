@@ -28,8 +28,10 @@ class SimpleNet(nn.Module):
             second_conv_features)))
         # flatten all dimensions except batch
         flattened_features = torch.flatten(third_conv_features, 1)
-        fully_connected_first_out = F.relu(self.fc1(flattened_features))
-        fully_connected_second_out = F.relu(self.fc2(fully_connected_first_out))
+        #fully_connected_first_out = F.relu(self.fc1(flattened_features))
+        #fully_connected_second_out = F.relu(self.fc2(fully_connected_first_out))
+        fully_connected_first_out = self.fc1(flattened_features)
+        fully_connected_second_out = self.fc2(fully_connected_first_out)
         two_way_output = self.fc3(fully_connected_second_out)
         return two_way_output
 

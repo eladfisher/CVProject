@@ -50,7 +50,7 @@ def compute_gradient_saliency_maps(samples: torch.tensor,
         - (4) Compute a backward pass on these scores.
         - (5) Collect the gradients from the samples object.
         - (6) Compute the absolute value (L1) of these values.
-        (7) Pick the maximum value from channels on each pixel.
+        - (7) Pick the maximum value from channels on each pixel.
 
     Args:
         samples: The samples we want to compute saliency maps for. Tensor of
@@ -61,32 +61,28 @@ def compute_gradient_saliency_maps(samples: torch.tensor,
         saliency: vanilla gradient saliency maps. This should be a tensor of
         shape Bx256x256 where B is the number of images in samples.
     """
-    """INSERT YOUR CODE HERE, overrun return
-    
-    
-    
-    pred = self.model(inputs)
-                total_loss += self.criterion(pred, targets).item()
-                correct_labeled_samples += (pred.argmax(1) == targets).type(torch.float).sum().item()
-    ."""
+    """INSERT YOUR CODE HERE, overrun return"""
     cuda_available = torch.cuda.is_available()
     if cuda_available:
-                samples = samples.to("cuda")
-                true_labels = true_labels.to("cuda")
+        samples = samples.to("cuda")
+        true_labels = true_labels.to("cuda")
     samples.requires_grad_()
 
     pred = model(samples)
-    scores = pred[:,true_labels]
+
+    print("pred: ",pred.size())
+    #scores = pred.index_select(1,true_labels)
+    scores = torch.zeros(pred.size(0))
+    for i in range(pred.size(0)):
+        scores[i] = pred[i,true_labels[i]]
+    print("scores: ",scores.size())
+
     scores.sum().backward()
     grad = samples.grad
     abs_val = torch.abs(grad)
 
-    print ("abs val :", abs_val)
-    print("abs size", abs_val.size())
-
-    return torch.max(abs_val,dim = 1)
-
-    return torch.rand(6, 256, 256)
+    input_max, max_indices = torch.max(abs_val,dim = 1)
+    return input_max
 
 
 def main():  # pylint: disable=R0914, R0915
