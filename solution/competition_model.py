@@ -16,9 +16,8 @@ class MyModel(nn.Module):
         self.conv2 = nn.Conv2d(6, 16, kernel_size=(7, 7))
         self.conv3 = nn.Conv2d(16, 24, kernel_size=(7, 7))
         self.fc1 = nn.Linear(24 * 26 * 26, 1024)
-        self.fc2 = nn.Linear(1024, 512)
-        self.fc3 = nn.Linear(512, 256)
-        self.fc4 = nn.Linear(256, 2)
+        self.fc2 = nn.Linear(1024, 256)
+        self.fc3 = nn.Linear(256, 2)
 
     def forward(self, image):
         """Compute a forward pass."""
@@ -31,8 +30,7 @@ class MyModel(nn.Module):
         flattened_features = torch.flatten(third_conv_features, 1)
         fully_connected_first_out = F.relu(self.fc1(flattened_features))
         fully_connected_second_out = F.relu(self.fc2(fully_connected_first_out))
-        fully_connected_third_out = F.relu(self.fc3(fully_connected_second_out))
-        two_way_output = self.fc4(fully_connected_third_out)
+        two_way_output = self.fc3(fully_connected_second_out)
         return two_way_output
 
 
