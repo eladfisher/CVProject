@@ -8,10 +8,10 @@ import matplotlib.pyplot as plt
 from pytorch_grad_cam import GradCAM
 from torch.utils.data import DataLoader
 from pytorch_grad_cam.utils.image import show_cam_on_image
+from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 
 from common import FIGURES_DIR
 from utils import load_dataset, load_model
-
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -52,20 +52,23 @@ def get_grad_cam_visualization(test_dataset: torch.utils.data.Dataset,
         of batch size 1, it's a tensor of shape (1,)).
     """
     """INSERT YOUR CODE HERE, overrun return."""
-    target_layers = [model.conv3]
-    input_tensor,label  = DataLoader(test_dataset,batch_size=1 , shuffle=True)# Create an input tensor image for your model..
-    cam = GradCAM(model=model, target_layers=target_layers, use_cuda=torch.cuda.is_available())
+    dataloader = DataLoader(test_dataset, batch_size=1, shuffle=True)
+    target_layer = [model.conv3]
+    input_tensor, true_label = next(iter(dataloader))
 
-    targets = [label]
-    grayscale_cam = cam(input_tensor=input_tensor, targets=targets)
-    rgb_img = np.transpose(input_tensor[0, :, :].numpy(), (1, 2, 0))
+    # Construct the CAM object once, and then re-use it on many images:
+    cam = GradCAM(model=model, target_layers=target_layer, use_cuda=torch.cuda.is_available())
+    # You can also pass aug_smooth=True and eigen_smooth=True, to apply smoothing.
+    grayscale_cam = cam(input_tensor=input_tensor)  # , target_category=true_label)
 
+    # In this example grayscale_cam has only one image in the batch:
+    grayscale_cam = grayscale_cam[0, :]
+    # print(np.max(grayscale_cam))
+    rgb_img = input_tensor[0, :].permute(1, 2, 0).cpu().detach().numpy()
+    rgb_img = (rgb_img - rgb_img.min()) / (rgb_img.max() - rgb_img.min())
     visualization = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
-    
-    
-    
-    return visualization,label
 
+    return visualization, true_label
 
 def main():
     """Create two GradCAM images, one of a real image and one for a fake
