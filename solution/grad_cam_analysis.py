@@ -19,7 +19,6 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # Arguments
 def parse_args():
     """Parse script arguments.
-
     Returns:
         Namespace with model name, checkpoint path and dataset name.
     """
@@ -40,11 +39,9 @@ def parse_args():
 def get_grad_cam_visualization(test_dataset: torch.utils.data.Dataset,
                                model: torch.nn.Module):
     """Return a tuple with the GradCAM visualization and true class label.
-
     Args:
         test_dataset: test dataset to choose a sample from.
         model: the model we want to understand.
-
     Returns:
         (visualization, true_label): a tuple containing the visualization of
         the conv3's response on one of the sample (256x256x3 np.ndarray) and
