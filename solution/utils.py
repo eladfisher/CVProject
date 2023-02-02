@@ -8,6 +8,7 @@ from torchvision import transforms
 from faces_dataset import FacesDataset
 from models import SimpleNet, get_xception_based_model
 
+from competition_model import my_new_competition_model
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 TRANSFORM_TRAIN = transforms.Compose([
@@ -63,6 +64,7 @@ def load_model(model_name: str) -> nn.Module:
     models = {
         'SimpleNet': SimpleNet(),
         'XceptionBased': get_xception_based_model(),
+        'Competitive' : my_new_competition_model()
     }
 
     if model_name not in models:

@@ -83,7 +83,7 @@ class Trainer:
             if batch_idx % print_every == 0 or \
                     batch_idx == len(train_dataloader) - 1:
                 avg_loss = total_loss / (batch_idx + 1)
-                accuracy = correct_labeled_samples/nof_samples
+                accuracy = 100*correct_labeled_samples/nof_samples
                 print(f'Epoch [{self.epoch:03d}] | Loss: {avg_loss:.3f} | '
                       f'Acc: {accuracy:.2f}[%] '
                       f'({correct_labeled_samples}/{nof_samples})')
@@ -133,7 +133,7 @@ class Trainer:
             if batch_idx % print_every == 0 or batch_idx == len(dataloader) - 1:
 
                 avg_loss = total_loss / (batch_idx + 1)
-                accuracy = correct_labeled_samples/nof_samples
+                accuracy = 100*correct_labeled_samples/nof_samples
 
                 print(f'Epoch [{self.epoch:03d}] | Loss: {avg_loss:.3f} | '
                       f'Acc: {accuracy:.2f}[%] '
@@ -199,7 +199,7 @@ class Trainer:
         best_acc = 0
         model_filename = f"{logging_parameters.dataset_name}_" \
                          f"{logging_parameters.model_name}_" \
-                         f"{logging_parameters.optimizer_name}.pt"
+                         f"{logging_parameters.optimizer_name}.pt" if logging_parameters.model_name != "Competitive" else "competition_model.pt"
         checkpoint_filename = os.path.join(CHECKPOINT_DIR, model_filename)
         for self.epoch in range(1, epochs + 1):
             print(f'Epoch {self.epoch}/{epochs}')
