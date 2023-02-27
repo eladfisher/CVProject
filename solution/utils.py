@@ -7,6 +7,7 @@ from torchvision import transforms
 
 from faces_dataset import FacesDataset
 from models import SimpleNet, get_xception_based_model
+from competition_model import get
 
 from competition_model import my_new_competition_model
 
